@@ -18,7 +18,7 @@ public class LocalFileManager implements RelMngFileManager {
 
 	public Path write(String filePath, byte[] content) throws IOException {
 		Path path = Paths.get(filePath);
-		return Files.write(path, content, StandardOpenOption.CREATE);
+		return Files.write(path, content, StandardOpenOption.CREATE_NEW);
 
 	}
 

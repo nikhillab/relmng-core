@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * @author nikhil
  */
-public interface EnvironmentDetailsRepository extends JpaRepository<EnvironmentDetails, Long> {
+public interface EnvironmentDetailRepository extends JpaRepository<EnvironmentDetails, EnvironmentDetails> {
 
 }

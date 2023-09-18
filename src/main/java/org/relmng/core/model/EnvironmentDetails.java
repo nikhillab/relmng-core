@@ -11,11 +11,15 @@ import jakarta.persistence.Table;
 @Table(name = "environment_details")
 public class EnvironmentDetails {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long environmentId;
 
 	@Column(name = "name", unique = true, nullable = false)
 	private String name;
+
+	@Column(name = "aes_config_id")
+	private long aesConfig;
+
 	boolean isActive;
 
 	/**
@@ -58,6 +62,20 @@ public class EnvironmentDetails {
 	 */
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	/**
+	 * @return the aesConfig
+	 */
+	public long getAesConfig() {
+		return aesConfig;
+	}
+
+	/**
+	 * @param aesConfig the aesConfig to set
+	 */
+	public void setAesConfig(long aesConfig) {
+		this.aesConfig = aesConfig;
 	}
 
 }
