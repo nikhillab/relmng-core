@@ -12,48 +12,43 @@ import javax.crypto.SecretKey;
 
 import org.relmng.core.file.RelMngFileManager;
 import org.relmng.core.record.RelMngAESConfigRecord;
-import org.relmng.core.service.RelMngAESConfigService;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 /**
  * 
  */
-@Component
 public class RelMngSecretKeyGenerator {
 
 	private final Environment environment;
 	private final RelMngFileManager relMngFileManager;
-	private final RelMngAESConfigService aesConfigService;
 
 	/**
 	 * @param environment
 	 * @param relMngFileManager
 	 */
-	public RelMngSecretKeyGenerator(Environment environment, RelMngFileManager relMngFileManager,
-			RelMngAESConfigService aesConfigService) {
+	public RelMngSecretKeyGenerator(Environment environment, RelMngFileManager relMngFileManager) {
 		this.environment = environment;
 		this.relMngFileManager = relMngFileManager;
-		this.aesConfigService = aesConfigService;
-//		generateMasterKey(environment.getRequiredProperty("crypto.key.bits", Integer.class),
-//				environment.getRequiredProperty("crypto.key.type"), "RELMNG_MASTER.txt");
 	}
 
 	/**
-	 * @param bits
-	 * @param type
 	 * @param path
 	 * @return
 	 */
-	public RelMngAESConfigRecord generateMasterKey(int bits, String type, String path) {
+	public RelMngAESConfigRecord generateMasterKey(String path) {
 		try {
-			SecretKey generateKeys = generateKeys(bits, type);
-			String location = environment.getProperty("crypto.key.location");
-			relMngFileManager.write(location + path,
-					Base64.getEncoder().encodeToString(generateKeys.getEncoded()).getBytes());
+			var bits = environment.getRequiredProperty("crypto.key.bits", Integer.class);
+			var type = environment.getRequiredProperty("crypto.key.type");
+			var location = environment.getProperty("crypto.key.location");
+			var masterFilePath = location + path;
+			boolean exist = relMngFileManager.exist(masterFilePath);
+			if (!exist) {
+				var generateKeys = generateKeys(bits, type);
+				relMngFileManager.write(masterFilePath,
+						Base64.getEncoder().encodeToString(generateKeys.getEncoded()).getBytes());
+			}
 
-			// TBD: save in DB
-			return aesConfigService.save(new RelMngAESConfigRecord(0l, type, bits, path, true));
+			return new RelMngAESConfigRecord(0l, type, bits, masterFilePath, exist);
 
 		} catch (NoSuchAlgorithmException | IOException e) {
 			throw new RuntimeException(e);
@@ -63,11 +58,11 @@ public class RelMngSecretKeyGenerator {
 	/**
 	 * @param bits
 	 * @param type
-	 * @return
+	 * @return SecretKey
 	 * @throws NoSuchAlgorithmException
 	 */
 	private SecretKey generateKeys(int bits, String type) throws NoSuchAlgorithmException {
-		KeyGenerator keyGenerator = KeyGenerator.getInstance(type);
+		var keyGenerator = KeyGenerator.getInstance(type);
 		keyGenerator.init(bits);
 		return keyGenerator.generateKey();
 	}

@@ -2,6 +2,9 @@ package org.relmng.core.model;
 
 import java.util.Set;
 
+import org.relmng.core.converters.StringFieldConverter;
+
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +21,8 @@ public class RelMngAESConfig {
 	private long pkId;
 	private String type;
 	private int bits;
+
+	@Convert(converter = StringFieldConverter.class)
 	private String secretKey;
 	@OneToMany(mappedBy = "aesConfig", fetch = FetchType.LAZY)
 	private Set<EnvironmentDetails> environmentDetails;

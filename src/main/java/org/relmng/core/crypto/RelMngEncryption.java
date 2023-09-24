@@ -3,14 +3,15 @@
  */
 package org.relmng.core.crypto;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-
 /**
  * 
  */
 public interface RelMngEncryption {
-	public byte[] encrypt(byte[] content) throws IllegalBlockSizeException, BadPaddingException;
+	public byte[] encrypt(byte[] content);
 
-	public byte[] decrypt(byte[] content) throws IllegalBlockSizeException, BadPaddingException;
+	public byte[] decrypt(byte[] content);
+
+	public String encrypt(String content);
+
+	public String decrypt(String content);
 }

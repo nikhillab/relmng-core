@@ -23,9 +23,22 @@ public class RelMngAESConfigService {
 		this.aesConfigRepository = aesConfigRepository;
 	}
 
+	/**
+	 * @param aesConfigRecord
+	 * @return RelMngAESConfigRecord
+	 */
 	public RelMngAESConfigRecord save(RelMngAESConfigRecord aesConfigRecord) {
 		var aesConfig = RelMngAESConfigMapper.mapRecordToRelMngAESConfig(aesConfigRecord);
 		aesConfig = aesConfigRepository.save(aesConfig);
+		return RelMngAESConfigMapper.mapToRelMngAESConfigRecord(aesConfig);
+	}
+
+	/**
+	 * @param location
+	 * @return RelMngAESConfigRecord
+	 */
+	public RelMngAESConfigRecord getAESConfigByLocation(String location) {
+		var aesConfig = aesConfigRepository.findBySecretKey(location);
 		return RelMngAESConfigMapper.mapToRelMngAESConfigRecord(aesConfig);
 	}
 }

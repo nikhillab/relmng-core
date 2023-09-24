@@ -44,20 +44,32 @@ public class RelMngAESEncryption implements RelMngEncryption {
 	}
 
 	@Override
-	public byte[] encrypt(byte[] content) throws IllegalBlockSizeException, BadPaddingException {
-		byte[] encryptedMessageBytes = encryptionCipher.doFinal(content);
-		String encryptedMessage = Base64.getEncoder().encodeToString(encryptedMessageBytes);
-		System.out.println("Encrypted message = " + encryptedMessage);
-		return Base64.getEncoder().encodeToString(encryptedMessageBytes).getBytes(StandardCharsets.UTF_8);
+	public byte[] encrypt(byte[] content) {
+		try {
+			byte[] encryptedMessageBytes = encryptionCipher.doFinal(content);
+			return Base64.getEncoder().encodeToString(encryptedMessageBytes).getBytes(StandardCharsets.UTF_8);
+		} catch (IllegalBlockSizeException | BadPaddingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public byte[] decrypt(byte[] content) throws IllegalBlockSizeException, BadPaddingException {
-		byte[] decode = Base64.getDecoder().decode(content);
-		byte[] decryptedMessageBytes = decryptionCipher.doFinal(decode);
-		String decryptedMessage = new String(decryptedMessageBytes);
-		System.out.println("decrypted message =" + decryptedMessage);
-		return decryptionCipher.doFinal(content);
+	public byte[] decrypt(byte[] content) {
+		try {
+			byte[] decode = Base64.getDecoder().decode(content);
+			return decryptionCipher.doFinal(decode);
+		} catch (IllegalBlockSizeException | BadPaddingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// using new string for now will see the gc and string pool 
+	public String encrypt(String content) {
+		return new String(encrypt(content.getBytes()));
+	}
+	// using new string for now will see the gc and string pool 
+	public String decrypt(String content) {
+		return new String(decrypt(content.getBytes()));
 	}
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
