@@ -29,7 +29,7 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 @ComponentScan(basePackages = { "${packages.component}" })
-public class CoreConfigs {
+public class CoreConfiguration {
 
 	/**
 	 * 
